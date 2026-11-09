@@ -61,7 +61,7 @@ export function Gate({ kind, title, studio, wrongPassword, onSubmit }: {
         )}
         {kind === 'not-found' && (
           <div>
-            <h1 className="font-display text-[36px] leading-[1.08]">Galeria não encontrada</h1>
+            <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.02em]">Galeria não encontrada</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-ink-3">O link pode estar incompleto ou a galeria ainda não foi publicada. Confira o endereço que você recebeu.</p>
           </div>
         )}

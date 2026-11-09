@@ -430,7 +430,7 @@ function SelectionIntro({ selection, limit, studioName }: { selection: Selection
   const submitted = selection?.status === 'submitted';
   return (
     <section className="mx-auto max-w-2xl px-4 pb-8 pt-8 text-center sm:pt-6">
-      <h2 className="font-display text-[30px] leading-tight">{submitted ? 'Seleção enviada' : 'Sua seleção'}</h2>
+      <h2 className="text-[24px] font-semibold tracking-[-0.02em]">{submitted ? 'Seleção enviada' : 'Sua seleção'}</h2>
       <p className="mx-auto mt-3 max-w-[52ch] text-[15px] leading-relaxed text-ink-3">
         {submitted
           ? `Enviada em ${formatDate(selection!.submittedAt!)} com ${plural(count, 'fotografia', 'fotografias')}. Para mudar algo, peça a ${studioName || 'quem fez as fotos'} para reabrir a seleção.`

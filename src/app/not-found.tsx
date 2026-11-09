@@ -16,7 +16,7 @@ export default function NotFound() {
   return (
     <main className="grid min-h-dvh place-items-center bg-wall px-6 text-center">
       <div>
-        <h1 className="font-display text-[40px]">Página não encontrada</h1>
+        <h1 className="text-[28px] font-semibold tracking-[-0.02em]">Página não encontrada</h1>
         <p className="mt-3 text-[15px] text-ink-3">Confira o endereço ou volte ao início.</p>
         <Link href="/" className="mt-6 inline-block text-[15px] font-medium underline">Voltar ao início</Link>
       </div>

@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+
+/* Revela: a white-cube exhibition. Wall white ground, ink type, hairlines instead of boxes,
+   square photographs, the photographer's accent only for state (favorite, chosen, focus). */
+@theme {
+  --color-wall: #fbfbf9;
+  --color-wall-2: #f3f2ee;
+  --color-paper: #ffffff;
+  --color-rule: #e7e6e1;
+  --color-rule-2: #d3d2cc;
+  --color-ink: #121212;
+  --color-ink-2: #45443f;
+  --color-ink-3: #66655f;
+  --color-room: #0b0b0b;
+  --color-room-2: #1b1b1a;
+  --color-danger: #a1261b;
+  --color-ok: #2f6b3c;
+  --color-accent: var(--accent, #a33a2a);
+
+  --font-display: var(--font-caslon), 'Big Caslon', 'Libre Caslon Display', Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --shadow-float: 0 1px 2px rgb(18 18 18 / 0.06), 0 12px 32px -14px rgb(18 18 18 / 0.28);
+  --shadow-sheet: 0 -1px 0 rgb(18 18 18 / 0.04), 0 -18px 48px -28px rgb(18 18 18 / 0.4);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: light;
+  accent-color: var(--color-ink);
+  caret-color: var(--color-accent);
+}
+
+html {
+  background: var(--color-wall);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-color: var(--color-rule-2) var(--color-wall);
+}
+
+body {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--color-ink); color: var(--color-wall); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--color-wall); }
+::-webkit-scrollbar-thumb { background: var(--color-rule-2); border: 3px solid var(--color-wall); border-radius: 6px; }
+
+:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.dark-room :focus-visible { outline-color: #fff; }
+
+a { text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+.tnum { font-variant-numeric: tabular-nums lining-nums; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+.font-display { font-family: var(--font-display); letter-spacing: -0.012em; font-weight: 400; }
+
+/* Translucent chrome over scrolling photographs. */
+.material {
+  background: rgb(251 251 249 / 0.82);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+}
+.material-dark {
+  background: rgb(11 11 11 / 0.55);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+/* Instant press feedback. */
+.press { transition: transform 140ms var(--ease-out-expo), background-color 160ms, color 160ms, border-color 160ms, opacity 160ms; }
+.press:active { transform: scale(0.96); }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.rise { animation: rise 640ms var(--ease-out-expo) both; animation-delay: calc(var(--d, 0) * 1ms); }
+
+@keyframes shimmer { to { background-position: -200% 0; } }
+.skeleton {
+  background: linear-gradient(90deg, var(--color-wall-2) 0%, #f8f8f5 50%, var(--color-wall-2) 100%) 0 0 / 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* Photographs fade up from their inline blur once decoded. */
+.photo-img { opacity: 0; transition: opacity 480ms var(--ease-out-expo); }
+.photo-img[data-loaded='true'] { opacity: 1; }
+
+@keyframes pop { 40% { transform: scale(1.22); } }
+.pop { animation: pop 380ms var(--ease-settle); }
+
+/* Dialogs and sheets enter and leave along the same path. */
+dialog.sheet {
+  transition: opacity 260ms var(--ease-out-expo), transform 380ms var(--ease-out-expo), overlay 380ms allow-discrete, display 380ms allow-discrete;
+  opacity: 0;
+  transform: translateY(20px);
+}
+dialog.sheet[open] { opacity: 1; transform: none; }
+@starting-style { dialog.sheet[open] { opacity: 0; transform: translateY(20px); } }
+dialog.sheet::backdrop {
+  background: rgb(18 18 18 / 0);
+  transition: background-color 300ms, overlay 380ms allow-discrete, display 380ms allow-discrete;
+}
+dialog.sheet[open]::backdrop { background: rgb(18 18 18 / 0.36); }
+@starting-style { dialog.sheet[open]::backdrop { background: rgb(18 18 18 / 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; transition-duration: 1ms !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .material { background: var(--color-wall); backdrop-filter: none; }
+  .material-dark { background: var(--color-room); backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  :root { --color-ink-3: #3d3c38; --color-rule: #a9a8a2; }
+}
+
+/* Presentation: the title card breathes in and out of black; the closing card arrives slowly. */
+@keyframes intro-card {
+  0% { opacity: 0; transform: translateY(10px); filter: blur(6px); }
+  28%, 78% { opacity: 1; transform: none; filter: blur(0); }
+  100% { opacity: 0; transform: translateY(-6px); filter: blur(4px); }
+}
+.intro-card { animation: intro-card 3200ms cubic-bezier(0.45, 0, 0.55, 1) both; }
+[data-paused='true'] .intro-card { animation-play-state: paused; }
+@keyframes end-card { from { opacity: 0; } }
+.end-card { animation: end-card 1600ms cubic-bezier(0.45, 0, 0.55, 1) both; }

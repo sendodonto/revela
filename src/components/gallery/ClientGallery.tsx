@@ -126,6 +126,7 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
 
   const toggleFavorite = useCallback(async (id: string) => {
     const on = !favorites.has(id);
+    navigator.vibrate?.(8);
     setFavorites((f) => {
       const n = new Set(f);
       if (on) n.add(id);
@@ -160,6 +161,7 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
       return;
     }
     chosenRef.current = next;
+    navigator.vibrate?.(8);
     const seq = ++saveSeq.current;
     setSelection((sel) => ({ ...(sel ?? { id: '', galleryId: gallery.id, visitorId: '', clientName: '', note: '', status: 'open', submittedAt: null, updatedAt: '' }), photoIds: next }));
     try {
@@ -250,7 +252,7 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
       <Cover data={data} onEnter={enterGrid} onPresent={() => setPresenting(true)} />
 
       <div ref={gridTop} className="scroll-mt-0" />
-      <nav aria-label="Galeria" className="material sticky top-0 z-30 border-b border-rule">
+      <nav aria-label="Galeria" className="material scroll-edge sticky top-0 z-30">
         <div className="mx-auto flex h-14 max-w-[1680px] items-center justify-between gap-3 px-3 sm:px-12">
           <div className="flex min-w-0 items-center gap-3 pl-1">
             <span className="hidden sm:block"><StudioMark studio={studio} /></span>
@@ -282,7 +284,7 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
                   role="tab"
                   aria-selected={view === t.id}
                   onClick={() => setView(t.id)}
-                  className={`press flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[14px] transition-colors ${view === t.id ? 'bg-ink text-wall' : 'text-ink-2 hover:bg-ink/[0.05]'}`}
+                  className={`press flex h-11 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[14px] transition-colors sm:h-9 ${view === t.id ? 'bg-ink text-wall' : 'text-ink-2 hover:bg-ink/[0.05]'}`}
                 >
                   {t.id === 'favorites' && <Heart size={13} className={view === t.id ? '' : 'text-[var(--color-accent)]'} fill="currentColor" aria-hidden />}
                   {t.label}

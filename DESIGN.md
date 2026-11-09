@@ -51,7 +51,94 @@ typography:
     fontWeight: 400
     lineHeight: 1.33
     fontFeature: "\"tnum\", \"lnum\""
+  display-36:
+    fontFamily: "Libre Caslon Display, Big Caslon, Georgia, serif"
+    fontSize: "36px"
+    fontWeight: 400
+    lineHeight: 1.05
+    letterSpacing: "-0.02em"
+    note: "Show titles only: gate 36, presentation cards 40/60-64, studio home 44/60, cover 42/60/84."
+  display-40:
+    fontFamily: "Libre Caslon Display, Big Caslon, Georgia, serif"
+    fontSize: "40px"
+    fontWeight: 400
+    lineHeight: 1.05
+    letterSpacing: "-0.02em"
+  display-44:
+    fontFamily: "Libre Caslon Display, Big Caslon, Georgia, serif"
+    fontSize: "44px"
+    fontWeight: 400
+    lineHeight: 1.05
+    letterSpacing: "-0.02em"
+  display-60:
+    fontFamily: "Libre Caslon Display, Big Caslon, Georgia, serif"
+    fontSize: "60px"
+    fontWeight: 400
+    lineHeight: 1.05
+    letterSpacing: "-0.02em"
+  display-64:
+    fontFamily: "Libre Caslon Display, Big Caslon, Georgia, serif"
+    fontSize: "64px"
+    fontWeight: 400
+    lineHeight: 1.05
+    letterSpacing: "-0.02em"
+  headline-24:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "24px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+    note: "Admin titles 26/30, selection 24, not-found and stat figures 28; 34/40 only as the gallery editor display title."
+  headline-26:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "26px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+  headline-28:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "28px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+  headline-34:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "34px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+  headline-40:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "40px"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+  sheet-title:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "19px"
+    fontWeight: 600
+    lineHeight: 1.3
+  control:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "16px"
+    fontWeight: 400
+    lineHeight: 1.4
+    note: "Text inputs on phones (below 640px). Anything smaller makes iOS Safari zoom on focus; 15px from sm up."
+  ui:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "14px"
+    fontWeight: 400
+    lineHeight: 1.45
+    note: "Buttons, tabs, list metadata, toasts, nav."
+  micro:
+    fontFamily: "Geist, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "11px"
+    fontWeight: 500
+    lineHeight: 1.2
+    fontFeature: "\"tnum\", \"lnum\""
+    note: "Tile numbers and the Capa badge over admin thumbnails only."
 rounded:
+  scrollbar: "6px"
   none: "0px"
   sm: "8px"
   field: "10px"

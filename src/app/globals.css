@@ -136,3 +136,16 @@ dialog.sheet[open]::backdrop { background: rgb(18 18 18 / 0.36); }
 @media (prefers-reduced-motion: reduce) {
   .intro-card { animation: none !important; }
 }
+
+/* Scroll edge: a soft fade where content slides under floating chrome, not a hard rule. */
+.scroll-edge::after {
+  content: '';
+  position: absolute;
+  inset: 100% 0 auto;
+  height: 14px;
+  pointer-events: none;
+  background: linear-gradient(rgb(18 18 18 / 0.06), transparent);
+}
+@media (prefers-contrast: more) {
+  .scroll-edge { border-bottom: 1px solid var(--color-rule); }
+}

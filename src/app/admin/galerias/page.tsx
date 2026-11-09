@@ -51,7 +51,7 @@ function GalleriesInner() {
         <label className="relative block sm:w-72">
           <span className="sr-only">Buscar galeria</span>
           <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-3" aria-hidden />
-          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar cliente ou ensaio" className="h-10 w-full rounded-full border border-rule-2 bg-paper pl-10 pr-4 text-[14px] placeholder:text-ink-3 focus:border-ink focus:outline-none" />
+          <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar cliente ou ensaio" className="h-10 w-full rounded-full border border-rule-2 bg-paper pl-10 pr-4 text-[16px] placeholder sm:text-[14px]:text-ink-3 focus:border-ink focus:outline-none" />
         </label>
       </div>
 

@@ -26,7 +26,7 @@ export function Cover({ data, onEnter, onPresent }: { data: PublicGallery; onEnt
       </div>
 
       <div className="flex flex-col justify-end px-5 pb-10 pt-8 sm:px-8 lg:px-12 lg:pb-14 xl:px-16">
-        <h1 className="rise font-display text-[42px] leading-[1.02] sm:text-[60px] xl:text-[84px]" style={{ '--d': 80 } as React.CSSProperties}>
+        <h1 className="rise font-display text-[42px] leading-[1.02] tracking-[-0.02em] sm:text-[60px] xl:text-[84px]" style={{ '--d': 80 } as React.CSSProperties}>
           {gallery.clientName}
         </h1>
         <p className="rise tnum mt-3 text-[14px] text-ink-3 sm:text-[15px]" style={{ '--d': 160 } as React.CSSProperties}>

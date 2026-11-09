@@ -88,7 +88,7 @@ export function SharePanel({ gallery, onChange }: { gallery: Gallery; onChange: 
           <p className="mt-0.5 text-[13px] text-ink-3">{s.hasPassword ? 'A galeria pede senha. A senha não fica visível nem para você: para trocar, defina outra.' : 'Sem senha: basta o link.'}</p>
           <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); setPw(password); }}>
             <input type="text" autoComplete="off" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={s.hasPassword ? 'Nova senha' : 'Defina uma senha'} aria-label="Senha da galeria" maxLength={72}
-              className="h-11 min-w-0 flex-1 rounded-full border border-rule-2 bg-paper px-4 text-[14px] focus:border-ink focus:outline-none sm:max-w-xs" />
+              className="h-11 min-w-0 flex-1 rounded-full border border-rule-2 bg-paper px-4 text-[16px] focus:border-ink focus:outline-none sm:max-w-xs sm:text-[14px]" />
             <div className="flex gap-2">
               <Button type="submit" variant="secondary" loading={pwBusy} disabled={!password}>{s.hasPassword ? 'Trocar senha' : 'Definir senha'}</Button>
               {s.hasPassword && <Button variant="ghost" className="text-danger" onClick={() => setPw(null)}>Remover</Button>}

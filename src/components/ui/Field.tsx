@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-const control = 'w-full rounded-[10px] border border-rule-2 bg-paper px-3.5 text-[15px] text-ink placeholder:text-ink-3 transition-colors hover:border-ink/30 focus:border-ink focus:outline-none disabled:bg-wall-2 aria-[invalid=true]:border-danger';
+const control = 'w-full rounded-[10px] border border-rule-2 bg-paper px-3.5 text-[16px] text-ink sm:text-[15px] placeholder:text-ink-3 transition-colors hover:border-ink/30 focus:border-ink focus:outline-none disabled:bg-wall-2 aria-[invalid=true]:border-danger';
 
 interface FieldProps { label: string; hint?: string; error?: string | null; className?: string }
 

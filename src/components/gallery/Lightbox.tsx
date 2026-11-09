@@ -1,12 +1,15 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { animate, motion, useMotionValue } from 'motion/react';
+import { AnimatePresence, animate, motion, useMotionValue, useTransform } from 'motion/react';
 import { ChevronLeft, ChevronRight, CircleCheck, Download, Heart, Info, LoaderCircle, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { formatBytes } from '@/lib/format';
 import type { PublicPhoto } from '@/types';
 import type { GridFlags } from './PhotoGrid';
 
 const ZOOM = 2.4;
+const SPRING = { type: 'spring', bounce: 0, duration: 0.38 } as const;
+// Apple's momentum projection: where a flick would come to rest.
+const project = (v: number, d = 0.998) => ((v / 1000) * d) / (1 - d);
 
 function useViewport() {
   const [vp, setVp] = useState({ w: 0, h: 0 });
@@ -19,7 +22,11 @@ function useViewport() {
   return vp;
 }
 
-/** The viewing room: the print grows out of the wall into the dark, then swipes, zooms and carries its label. */
+/**
+ * The viewing room. The print grows out of the wall into the dark (shared layout, only on open and close),
+ * pages follow the finger and slide in from the side they were thrown, a pull downward dims the room
+ * and lets go back to the wall, and a double tap zooms into the point that was tapped.
+ */
 export function Lightbox({ photos, index, numberOf, albumOf, flags, canDownload, downloading, onIndex, onClose, onFavorite, onChoose, onDownload }: {
   photos: PublicPhoto[];
   index: number;
@@ -36,21 +43,34 @@ export function Lightbox({ photos, index, numberOf, albumOf, flags, canDownload,
 }) {
   const photo = photos[index];
   const vp = useViewport();
-  const [zoomed, setZoomed] = useState(false);
+  const [zoom, setZoom] = useState<{ on: boolean; ox: number; oy: number }>({ on: false, ox: 50, oy: 50 });
   const [info, setInfo] = useState(false);
   const [chrome, setChrome] = useState(true);
+  const [dir, setDir] = useState(0);
+  // The shared-layout link to the grid only exists on the way in and on the way out, so paging never flies tiles around.
+  const [linked, setLinked] = useState<string | null>(photo?.id ?? null);
   const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const room = useTransform(y, [-320, 0, 320], [0.25, 1, 0.25]);
+  const shrink = useTransform(y, [-400, 0, 400], [0.86, 1, 0.86]);
   const closeRef = useRef<HTMLButtonElement>(null);
   const lastTap = useRef(0);
+
+  const close = useCallback(() => {
+    if (!photo) return onClose();
+    setLinked(photo.id);
+    requestAnimationFrame(() => onClose());
+  }, [onClose, photo]);
 
   const go = useCallback((d: number) => {
     const next = index + d;
     if (next < 0 || next >= photos.length) {
-      animate(x, 0, { type: 'spring', bounce: 0, duration: 0.35 });
+      animate(x, 0, SPRING);
       return;
     }
-    setZoomed(false);
-    x.set(0);
+    setLinked(null);
+    setZoom((z) => ({ ...z, on: false }));
+    setDir(d);
     onIndex(next);
   }, [index, photos.length, onIndex, x]);
 
@@ -65,12 +85,12 @@ export function Lightbox({ photos, index, numberOf, albumOf, flags, canDownload,
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') go(1);
       else if (e.key === 'ArrowLeft') go(-1);
-      else if (e.key === 'Escape') onClose();
+      else if (e.key === 'Escape') close();
       else if (e.key.toLowerCase() === 'f' && flags.allowFavorites && photo) onFavorite(photo.id);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go, onClose, onFavorite, photo, flags.allowFavorites]);
+  }, [go, close, onFavorite, photo, flags.allowFavorites]);
 
   // Preload the neighbours so swiping never waits.
   useEffect(() => {
@@ -89,11 +109,7 @@ export function Lightbox({ photos, index, numberOf, albumOf, flags, canDownload,
   const scale = Math.min((vp.w - padX) / photo.width, (vp.h - padY) / photo.height);
   const w = Math.max(1, Math.round(photo.width * scale));
   const h = Math.max(1, Math.round(photo.height * scale));
-
-  const toggleZoom = () => {
-    setZoomed((z) => !z);
-    x.set(0);
-  };
+  const travel = vp.w + 40;
 
   const bar = `transition-opacity duration-300 ${chrome || info ? 'opacity-100' : 'pointer-events-none opacity-0'}`;
   const btn = 'press grid size-11 place-items-center rounded-full text-white/90 hover:bg-white/10 hover:text-white';
@@ -103,47 +119,88 @@ export function Lightbox({ photos, index, numberOf, albumOf, flags, canDownload,
       role="dialog"
       aria-modal="true"
       aria-label={`Fotografia ${n} de ${photos.length}`}
-      className="dark-room fixed inset-0 z-50 select-none bg-room text-white"
-      initial={{ backgroundColor: 'rgba(11,11,11,0)' }}
-      animate={{ backgroundColor: 'rgba(11,11,11,1)' }}
-      exit={{ backgroundColor: 'rgba(11,11,11,0)', transition: { duration: 0.25 } }}
-      transition={{ duration: 0.35 }}
+      className="dark-room fixed inset-0 z-50 select-none text-white"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 1 }}
     >
+      <motion.div
+        aria-hidden
+        className="absolute inset-0 bg-room"
+        style={{ opacity: room }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.25 } }}
+        transition={{ duration: 0.3 }}
+      />
       <div className="absolute inset-0 grid place-items-center overflow-hidden">
-        <motion.div layoutId={`photo-${photo.id}`} style={{ width: w, height: h }} transition={{ type: 'spring', bounce: 0, duration: 0.42 }} className="relative">
+        <AnimatePresence initial={false} custom={dir} mode="popLayout">
           <motion.div
             key={photo.id}
-            className="size-full touch-none"
-            style={{ x }}
-            initial={{ opacity: 0.4 }}
-            animate={{ opacity: 1, scale: zoomed ? ZOOM : 1 }}
-            transition={{ opacity: { duration: 0.18 }, scale: { type: 'spring', bounce: 0, duration: 0.4 } }}
-            drag={zoomed ? true : 'x'}
-            dragConstraints={zoomed ? { left: (-w * (ZOOM - 1)) / 2, right: (w * (ZOOM - 1)) / 2, top: (-h * (ZOOM - 1)) / 2, bottom: (h * (ZOOM - 1)) / 2 } : { left: 0, right: 0 }}
-            dragElastic={zoomed ? 0.15 : 0.6}
-            onDragEnd={(_, i) => {
-              if (zoomed) return;
-              if (i.offset.x < -70 || i.velocity.x < -500) go(1);
-              else if (i.offset.x > 70 || i.velocity.x > 500) go(-1);
+            layoutId={linked === photo.id ? `photo-${photo.id}` : undefined}
+            custom={dir}
+            variants={{
+              enter: (d: number) => ({ x: d * travel }),
+              center: { x: 0 },
+              exit: (d: number) => ({ x: -d * travel }),
             }}
-            onTap={() => {
-              const now = Date.now();
-              if (now - lastTap.current < 280) toggleZoom();
-              else setChrome((c) => !c);
-              lastTap.current = now;
-            }}
+            initial="enter"
+            animate="center"
+            exit={linked === photo.id ? undefined : 'exit'}
+            transition={SPRING}
+            style={{ width: w, height: h, scale: shrink }}
+            className="relative"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={photo.display} alt={`Fotografia ${n}`} draggable={false} className="pointer-events-none size-full object-contain" style={{ backgroundImage: photo.blur ? `url(${photo.blur})` : undefined, backgroundSize: 'cover' }} />
+            <motion.div
+              className="size-full touch-none"
+              style={{ x, y, transformOrigin: `${zoom.ox}% ${zoom.oy}%` }}
+              animate={{ scale: zoom.on ? ZOOM : 1 }}
+              transition={SPRING}
+              drag
+              dragDirectionLock={!zoom.on}
+              dragConstraints={zoom.on
+                ? { left: (-w * (ZOOM - 1)) / 2, right: (w * (ZOOM - 1)) / 2, top: (-h * (ZOOM - 1)) / 2, bottom: (h * (ZOOM - 1)) / 2 }
+                : { left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={zoom.on ? 0.15 : { left: index === photos.length - 1 ? 0.2 : 0.7, right: index === 0 ? 0.2 : 0.7, top: 0.6, bottom: 0.9 }}
+              dragTransition={{ bounceStiffness: 400, bounceDamping: 40 }}
+              onDragEnd={(_, i) => {
+                if (zoom.on) return;
+                const pastX = i.offset.x + project(i.velocity.x);
+                const pastY = i.offset.y + project(i.velocity.y);
+                if (Math.abs(i.offset.y) > Math.abs(i.offset.x) && Math.abs(pastY) > 160) {
+                  close();
+                  return;
+                }
+                if (pastX < -w * 0.35) go(1);
+                else if (pastX > w * 0.35) go(-1);
+                animate(x, 0, SPRING);
+                animate(y, 0, SPRING);
+              }}
+              onTap={(e, info) => {
+                const now = Date.now();
+                if (now - lastTap.current < 280) {
+                  const r = (e.currentTarget as HTMLElement | null)?.getBoundingClientRect?.() ?? (e.target as HTMLElement).getBoundingClientRect();
+                  setZoom((z) => ({ on: !z.on, ox: ((info.point.x - window.scrollX - r.left) / r.width) * 100, oy: ((info.point.y - window.scrollY - r.top) / r.height) * 100 }));
+                  x.set(0);
+                  y.set(0);
+                  lastTap.current = 0;
+                } else {
+                  setChrome((c) => !c);
+                  lastTap.current = now;
+                }
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={photo.display} alt={`Fotografia ${n}`} draggable={false} className="pointer-events-none size-full object-contain" style={{ backgroundImage: photo.blur ? `url(${photo.blur})` : undefined, backgroundSize: 'cover' }} />
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </AnimatePresence>
       </div>
 
       <div className={`absolute inset-x-0 top-0 flex items-center justify-between gap-2 px-2 pt-[max(env(safe-area-inset-top),8px)] sm:px-4 ${bar}`}>
-        <button ref={closeRef} type="button" onClick={onClose} aria-label="Fechar e voltar à galeria" className={btn}><X size={22} /></button>
+        <button ref={closeRef} type="button" onClick={close} aria-label="Fechar e voltar à galeria" className={btn}><X size={22} /></button>
         <p className="tnum text-[14px] text-white/80" aria-live="polite">{n} / {photos.length}</p>
         <div className="flex items-center">
-          <button type="button" onClick={toggleZoom} aria-label={zoomed ? 'Reduzir' : 'Ampliar'} className={`${btn} max-sm:hidden`}>{zoomed ? <ZoomOut size={20} /> : <ZoomIn size={20} />}</button>
+          <button type="button" onClick={() => setZoom((z) => ({ on: !z.on, ox: 50, oy: 50 }))} aria-label={zoom.on ? 'Reduzir' : 'Ampliar'} className={`${btn} max-sm:hidden`}>{zoom.on ? <ZoomOut size={20} /> : <ZoomIn size={20} />}</button>
           <button type="button" onClick={() => setInfo((v) => !v)} aria-pressed={info} aria-label="Informações da foto" className={btn}><Info size={20} /></button>
           {canDownload && (
             <button type="button" onClick={() => onDownload(photo)} disabled={downloading} aria-label="Baixar esta foto" className={btn}>

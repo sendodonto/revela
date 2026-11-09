@@ -289,7 +289,7 @@ export function PhotoManager({ gallery, onGalleryChange }: { gallery: Gallery; o
               <select
                 value=""
                 onChange={(e) => e.target.value && moveTo(e.target.value === '__none' ? null : e.target.value)}
-                className="h-9 rounded-full border border-rule-2 bg-paper px-3 text-[13px] focus:border-ink focus:outline-none"
+                className="h-9 rounded-full border border-rule-2 bg-paper px-3 text-[16px] sm:text-[13px] focus:border-ink focus:outline-none"
               >
                 <option value="">Mover para álbum…</option>
                 {albums.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}

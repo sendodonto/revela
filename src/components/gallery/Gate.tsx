@@ -47,7 +47,7 @@ export function Gate({ kind, title, studio, wrongPassword, onSubmit }: {
                 aria-describedby={wrongPassword ? 'pw-error' : undefined}
                 className="h-12 min-w-0 flex-1 rounded-full border border-rule-2 bg-paper px-5 text-[16px] focus:border-ink focus:outline-none aria-[invalid=true]:border-danger"
               />
-              <Button type="submit" size="lg" loading={busy} aria-label="Entrar na galeria" className="w-12 px-0" icon={busy ? undefined : <ArrowRight size={18} />} />
+              <Button type="submit" size="lg" loading={busy} aria-label="Entrar na galeria" icon={busy ? undefined : <ArrowRight size={18} />} />
             </div>
             {wrongPassword && <p id="pw-error" role="alert" className="mt-2 text-[14px] text-danger">Senha incorreta. Confira com quem enviou o link.</p>}
           </form>

@@ -56,6 +56,7 @@ function EditorInner() {
 
   return (
     <AdminPage
+      display
       back={back}
       title={gallery.clientName}
       subtitle={

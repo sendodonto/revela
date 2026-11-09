@@ -82,13 +82,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 }
 
 /** Page frame shared by admin screens: one title, optional actions, consistent width. */
-export function AdminPage({ title, subtitle, actions, children, back }: { title: React.ReactNode; subtitle?: React.ReactNode; actions?: React.ReactNode; children: React.ReactNode; back?: React.ReactNode }) {
+export function AdminPage({ title, subtitle, actions, children, back, display }: { title: React.ReactNode; subtitle?: React.ReactNode; actions?: React.ReactNode; children: React.ReactNode; back?: React.ReactNode; display?: boolean }) {
   return (
     <main className="mx-auto max-w-[1180px] px-4 pb-24 pt-6 sm:px-8 lg:pt-10">
       {back}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="font-display text-[34px] leading-[1.08] sm:text-[40px]">{title}</h1>
+          <h1 className={display ? 'font-display text-[34px] leading-[1.08] sm:text-[40px]' : 'text-[26px] font-semibold leading-tight tracking-[-0.02em] sm:text-[30px]'}>{title}</h1>
           {subtitle && <div className="mt-2 text-[14px] text-ink-3">{subtitle}</div>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}

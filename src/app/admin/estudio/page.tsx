@@ -136,8 +136,8 @@ export default function StudioPage() {
               <div className="absolute left-4 top-4"><StudioMark studio={{ name: studio.name, logo: preview.logo }} tone="light" /></div>
             </div>
             <div className="p-5">
-              <p className="text-[13px] text-ink-2">Ana & Pedro</p>
-              <p className="font-display mt-1 text-[30px] leading-none">Casamento</p>
+              <p className="font-display text-[30px] leading-none">Ana & Pedro</p>
+              <p className="mt-2 text-[13px] text-ink-3">Casamento · 29 fotografias</p>
               <div className="mt-4 flex items-center gap-3 text-[13px] text-ink-2">
                 <span className="inline-flex h-8 items-center rounded-full bg-ink px-4 text-wall">Ver galeria</span>
                 <span className="flex items-center gap-1"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.1 3.4 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.6 0 6 3.6 4.5 7.3C19.5 16.4 12 21 12 21Z" fill="var(--color-accent)" /></svg> Favorita</span>

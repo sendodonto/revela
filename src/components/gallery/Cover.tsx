@@ -12,7 +12,7 @@ export function Cover({ data, onEnter, onPresent }: { data: PublicGallery; onEnt
 
   return (
     <header className="relative lg:grid lg:min-h-dvh lg:grid-cols-[minmax(0,1.5fr)_minmax(380px,1fr)]">
-      <div className="relative h-[76svh] min-h-[420px] lg:h-auto lg:min-h-dvh">
+      <div className="relative h-[66svh] min-h-[380px] lg:h-auto lg:min-h-dvh">
         {cover ? (
           <PhotoImg src={cover.display} blur={cover.blur} alt={`Capa: ${gallery.title}, ${gallery.clientName}`} eager sizes="(min-width: 1024px) 60vw, 100vw" className="absolute inset-0" />
         ) : (
@@ -26,17 +26,13 @@ export function Cover({ data, onEnter, onPresent }: { data: PublicGallery; onEnt
       </div>
 
       <div className="flex flex-col justify-end px-5 pb-10 pt-8 sm:px-8 lg:px-12 lg:pb-14 xl:px-16">
-        <p className="rise text-[15px] text-ink-2" style={{ '--d': 60 } as React.CSSProperties}>{gallery.clientName}</p>
-        <h1 className="rise font-display mt-2 text-[44px] leading-[1.02] sm:text-[56px] xl:text-[68px]" style={{ '--d': 120 } as React.CSSProperties}>
-          {gallery.title}
+        <h1 className="rise font-display text-[42px] leading-[1.02] sm:text-[60px] xl:text-[84px]" style={{ '--d': 80 } as React.CSSProperties}>
+          {gallery.clientName}
         </h1>
-        <p className="rise tnum mt-4 text-[14px] text-ink-3" style={{ '--d': 180 } as React.CSSProperties}>
-          {[gallery.eventDate && formatDate(gallery.eventDate), plural(photos.length, 'fotografia', 'fotografias')].filter(Boolean).join('  ·  ')}
+        <p className="rise tnum mt-3 text-[14px] text-ink-3 sm:text-[15px]" style={{ '--d': 160 } as React.CSSProperties}>
+          {[gallery.title, gallery.eventDate && formatDate(gallery.eventDate), plural(photos.length, 'fotografia', 'fotografias')].filter(Boolean).join('  ·  ')}
         </p>
-        {gallery.description && (
-          <p className="rise mt-5 max-w-[46ch] text-[15px] leading-relaxed text-ink-2" style={{ '--d': 220 } as React.CSSProperties}>{gallery.description}</p>
-        )}
-        <div className="rise mt-8 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ '--d': 280 } as React.CSSProperties}>
+        <div className="rise mt-6 flex sm:mt-8 flex-wrap items-center gap-x-6 gap-y-3" style={{ '--d': 280 } as React.CSSProperties}>
           <button type="button" onClick={onEnter} className="press h-12 rounded-full bg-ink px-7 text-[15px] font-medium text-wall hover:bg-[#2a2a28]">
             Ver galeria
           </button>
@@ -49,6 +45,9 @@ export function Cover({ data, onEnter, onPresent }: { data: PublicGallery; onEnt
             </button>
           )}
         </div>
+        {gallery.description && (
+          <p className="rise mt-6 max-w-[46ch] text-[15px] leading-relaxed text-ink-2" style={{ '--d': 260 } as React.CSSProperties}>{gallery.description}</p>
+        )}
       </div>
     </header>
   );

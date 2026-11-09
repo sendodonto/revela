@@ -252,8 +252,8 @@ export function Presentation({ data, photos, onClose, onShowGallery }: { data: P
         <div className="absolute inset-0 grid place-items-center px-8 text-center">
           <div className="intro-card">
             <StudioMark studio={studio} tone="light" className="opacity-80" />
-            <h2 className="font-display mt-6 text-[40px] leading-[1.05] sm:text-[64px]">{gallery.title}</h2>
-            <p className="mt-4 text-[15px] text-white/70">{[gallery.clientName, gallery.eventDate && formatDate(gallery.eventDate)].filter(Boolean).join('  ·  ')}</p>
+            <h2 className="font-display mt-6 text-[40px] leading-[1.05] sm:text-[64px]">{gallery.clientName}</h2>
+            <p className="mt-4 text-[15px] text-white/70">{[gallery.title, gallery.eventDate && formatDate(gallery.eventDate)].filter(Boolean).join('  ·  ')}</p>
           </div>
         </div>
       )}

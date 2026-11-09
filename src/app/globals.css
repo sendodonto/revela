@@ -132,3 +132,7 @@ dialog.sheet[open]::backdrop { background: rgb(18 18 18 / 0.36); }
 [data-paused='true'] .intro-card { animation-play-state: paused; }
 @keyframes end-card { from { opacity: 0; } }
 .end-card { animation: end-card 1600ms cubic-bezier(0.45, 0, 0.55, 1) both; }
+/* Reduced motion: the title card is shown still, not left on its faded-out last frame. */
+@media (prefers-reduced-motion: reduce) {
+  .intro-card { animation: none !important; }
+}

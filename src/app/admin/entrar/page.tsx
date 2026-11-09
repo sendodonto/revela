@@ -38,7 +38,7 @@ export default function LoginPage() {
             }
           }}
         >
-          <h1 className="font-display text-[40px] leading-tight">Entrar no painel</h1>
+          <h1 className="text-[30px] font-semibold tracking-[-0.02em]">Entrar no painel</h1>
           <p className="mt-2 text-[15px] text-ink-3">Galerias, clientes e a identidade do seu estúdio.</p>
           <div className="mt-8 grid gap-4">
             <Input label="E-mail" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />

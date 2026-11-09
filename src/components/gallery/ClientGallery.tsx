@@ -235,9 +235,9 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
 
   const tabs: { id: View; label: string; count: number }[] = [
     { id: 'all', label: 'Todas', count: photos.length },
-    ...albums.map((a) => ({ id: `album:${a.id}` as View, label: a.name, count: photos.filter((p) => p.albumId === a.id).length })).filter((t) => t.count),
     ...(s.allowFavorites ? [{ id: 'favorites' as View, label: 'Favoritas', count: favorites.size }] : []),
     ...(s.allowSelection ? [{ id: 'selection' as View, label: 'Seleção', count: chosen.size }] : []),
+    ...albums.map((a) => ({ id: `album:${a.id}` as View, label: a.name, count: photos.filter((p) => p.albumId === a.id).length })).filter((t) => t.count),
   ];
   const lightboxIndex = openId ? visible.findIndex((p) => p.id === openId) : -1;
   const lightboxList = lightboxIndex >= 0 ? visible : photos;
@@ -251,7 +251,7 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
 
       <div ref={gridTop} className="scroll-mt-0" />
       <nav aria-label="Galeria" className="material sticky top-0 z-30 border-b border-rule">
-        <div className="mx-auto flex h-14 max-w-[1680px] items-center justify-between gap-3 px-3 sm:px-6">
+        <div className="mx-auto flex h-14 max-w-[1680px] items-center justify-between gap-3 px-3 sm:px-12">
           <div className="flex min-w-0 items-center gap-3 pl-1">
             <span className="hidden sm:block"><StudioMark studio={studio} /></span>
             <span className="hidden h-4 w-px bg-rule-2 sm:block" aria-hidden />
@@ -273,8 +273,8 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
           </div>
         </div>
         {tabs.length > 1 && (
-          <div className="mx-auto max-w-[1680px] overflow-x-auto px-3 no-scrollbar sm:px-6" role="tablist" aria-label="Filtrar fotos">
-            <div className="flex w-max gap-1 pb-2">
+          <div className="mx-auto max-w-[1680px] overflow-x-auto px-3 no-scrollbar [mask-image:linear-gradient(to_right,black_calc(100%-32px),transparent)] sm:px-12 sm:[mask-image:none]" role="tablist" aria-label="Filtrar fotos">
+            <div className="flex w-max gap-1 pb-2 pr-8">
               {tabs.map((t) => (
                 <button
                   key={t.id}
@@ -296,12 +296,12 @@ function OpenGallery({ slug, data }: { slug: string; data: PublicGallery }) {
         )}
       </nav>
 
-      <main id="fotos" className="mx-auto max-w-[1680px] px-1 pb-32 pt-1 sm:px-6 sm:pt-6">
+      <main id="fotos" className="mx-auto max-w-[1680px] px-4 pb-32 pt-4 sm:px-12 sm:pt-10">
         {view === 'selection' && (
           <SelectionIntro selection={selection} limit={s.selectionLimit} studioName={studio.name} />
         )}
         {visible.length ? (
-          <PhotoGrid photos={visible} numberOf={numberOf} flags={flags} onOpen={open} onFavorite={toggleFavorite} onChoose={toggleChosen} onPick={togglePick} />
+          <PhotoGrid photos={visible} numberOf={numberOf} albumOf={albumOf} flags={flags} onOpen={open} onFavorite={toggleFavorite} onChoose={toggleChosen} onPick={togglePick} />
         ) : view === 'favorites' ? (
           <Empty icon={<Heart size={26} strokeWidth={1.5} />} title="Nenhuma favorita ainda">Toque no coração de uma foto para guardá-la aqui. Suas favoritas ficam salvas neste aparelho.</Empty>
         ) : view === 'selection' ? null : (

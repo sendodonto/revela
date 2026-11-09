@@ -29,9 +29,10 @@ function useWidth<T extends HTMLElement>() {
 }
 
 /** Justified rows: every photograph at its true proportions, hung edge to edge like a salon wall. */
-export function PhotoGrid({ photos, numberOf, flags, onOpen, onFavorite, onChoose, onPick }: {
+export function PhotoGrid({ photos, numberOf, albumOf, flags, onOpen, onFavorite, onChoose, onPick }: {
   photos: PublicPhoto[];
   numberOf: (id: string) => number;
+  albumOf: (p: PublicPhoto) => string | null;
   flags: GridFlags;
   onOpen: (id: string) => void;
   onFavorite: (id: string) => void;
@@ -40,16 +41,16 @@ export function PhotoGrid({ photos, numberOf, flags, onOpen, onFavorite, onChoos
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const narrow = width < 640;
-  const gap = narrow ? 4 : 10;
-  const rows = useMemo(() => (width ? justify(photos, width, narrow ? 168 : width > 1400 ? 340 : 290, gap) : []), [photos, width, narrow, gap]);
+  const gap = narrow ? 8 : 28;
+  const rows = useMemo(() => (width ? justify(photos, width, narrow ? 160 : width > 1400 ? 320 : 270, gap) : []), [photos, width, narrow, gap]);
 
   return (
     <div ref={ref} className="w-full">
       {!width && <div className="h-[60vh]" />}
       {rows.map((row, r) => (
-        <div key={r} className="flex" style={{ gap, marginBottom: gap, height: row.height }}>
+        <div key={r} className="flex" style={{ gap, marginBottom: narrow ? 14 : gap }}>
           {row.items.map(({ item, width: w }) => (
-            <Tile key={item.id} photo={item} width={w} height={row.height} n={numberOf(item.id)} flags={flags} onOpen={onOpen} onFavorite={onFavorite} onChoose={onChoose} onPick={onPick} eager={r < 2} />
+            <Tile key={item.id} photo={item} width={w} height={row.height} n={numberOf(item.id)} album={albumOf(item)} flags={flags} onOpen={onOpen} onFavorite={onFavorite} onChoose={onChoose} onPick={onPick} eager={r < 2} />
           ))}
         </div>
       ))}
@@ -57,8 +58,8 @@ export function PhotoGrid({ photos, numberOf, flags, onOpen, onFavorite, onChoos
   );
 }
 
-const Tile = memo(function Tile({ photo, width, height, n, flags, onOpen, onFavorite, onChoose, onPick, eager }: {
-  photo: PublicPhoto; width: number; height: number; n: number; flags: GridFlags; eager: boolean;
+const Tile = memo(function Tile({ photo, width, height, n, album, flags, onOpen, onFavorite, onChoose, onPick, eager }: {
+  photo: PublicPhoto; width: number; height: number; n: number; album: string | null; flags: GridFlags; eager: boolean;
   onOpen: (id: string) => void; onFavorite: (id: string) => void; onChoose: (id: string) => void; onPick: (id: string) => void;
 }) {
   const fav = flags.favorites.has(photo.id);
@@ -68,7 +69,8 @@ const Tile = memo(function Tile({ photo, width, height, n, flags, onOpen, onFavo
   const label = `Fotografia ${n}`;
 
   return (
-    <div className="group relative shrink-0" style={{ width, height }}>
+    <figure className="shrink-0" style={{ width }}>
+    <div className="group relative" style={{ width, height }}>
       <motion.button
         type="button"
         layoutId={`photo-${photo.id}`}
@@ -87,9 +89,6 @@ const Tile = memo(function Tile({ photo, width, height, n, flags, onOpen, onFavo
         </span>
       ) : (
         <>
-          <span className="tnum pointer-events-none absolute bottom-2 left-2.5 text-[11px] font-medium text-white opacity-0 drop-shadow-[0_1px_2px_rgb(0_0_0/0.6)] transition-opacity group-hover:opacity-100">
-            {String(n).padStart(2, '0')}
-          </span>
           {flags.allowSelection && (
             <button
               type="button"
@@ -116,5 +115,7 @@ const Tile = memo(function Tile({ photo, width, height, n, flags, onOpen, onFavo
         </>
       )}
     </div>
+    <figcaption className="tnum mt-1.5 truncate text-[12px] leading-4 text-ink-3">Nº {String(n).padStart(2, '0')}{album && width >= 130 ? ` · ${album}` : ''}</figcaption>
+    </figure>
   );
 });
